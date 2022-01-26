@@ -1,8 +1,12 @@
 import java.awt.Robot; 
 
 //colour pallette 
-color black = #000000; 
-color white = #FFFFFF; 
+color black = #000000; //oak planks 
+color white = #FFFFFF; //empty space 
+color blue  = #C8E7FF; //mossy bricks 
+
+//textures 
+PImage mossystone, wood; 
 
 //map variables 
 int gridSize; 
@@ -18,19 +22,26 @@ float leftRightHeadAngle, upDownHeadAngle;
 
 void setup() { 
   size(displayWidth, displayHeight, P3D); 
+  mossystone = loadImage("mossystone.png"); 
+  wood = loadImage("wood.jpg"); 
   textureMode(NORMAL); 
+  
   wkey = akey = skey = dkey = false; 
+  
   eyeX = width/2; 
-  eyeY = height/2; 
-  eyeZ = 0; 
+  eyeY = 9*height/10; 
+  eyeZ = height/2; 
+  
   focusX = width/2; 
   focusY = height/2; 
-  focusZ = 10; 
+  focusZ = height/2 - 100; 
+  
   upX = 0; 
   upY = 1; 
   upZ = 0; 
+  
   leftRightHeadAngle = radians(270);
-  //noCursor();
+  
   try { 
     rbt = new Robot(); 
   } 
@@ -46,8 +57,10 @@ void setup() {
 
 void draw() { 
   background(0); 
+  
   camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, upX, upY, upZ); 
-  drawFloor();
+  //drawFloor(-2000, 2000, height, 100);
+  //drawFloor(-2000, 2000, height-gridSize*3, 100); 
   drawFocalpoint();
   drawMap(); 
   controlCamera();
@@ -57,13 +70,15 @@ void drawMap() {
   for (int x = 0; x < map.width; x++) { 
     for (int y = 0; y < map.height; y++) { 
       color c  = map.get(x, y); 
-      if (c != white) { 
-         pushMatrix(); 
-         fill(c); 
-         stroke(100); 
-         translate(x*gridSize-2000, height/2, y*gridSize-2000); 
-         box(gridSize, height, gridSize); 
-         popMatrix(); 
+      if (c == blue) { 
+         texturedCube(x*gridSize-2000, height-gridSize, y*gridSize-2000, mossystone, gridSize);
+         texturedCube(x*gridSize-2000, height-gridSize*2, y*gridSize-2000, mossystone, gridSize); 
+         texturedCube(x*gridSize-2000, height-gridSize*3, y*gridSize-2000, mossystone, gridSize); 
+      } 
+      if (c == black) {
+         texturedCube(x*gridSize-2000, height-gridSize, y*gridSize-2000, wood, gridSize);
+         texturedCube(x*gridSize-2000, height-gridSize*2, y*gridSize-2000, wood, gridSize); 
+         texturedCube(x*gridSize-2000, height-gridSize*3, y*gridSize-2000, wood, gridSize);
       }
     }
   }
