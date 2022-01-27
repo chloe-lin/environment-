@@ -25,42 +25,41 @@ void setup() {
   mossystone = loadImage("mossystone.png"); 
   wood = loadImage("wood.jpg"); 
   textureMode(NORMAL); 
-  
+
   wkey = akey = skey = dkey = false; 
-  
+
   eyeX = width/2; 
   eyeY = 9*height/10; 
   eyeZ = height/2; 
-  
+
   focusX = width/2; 
   focusY = height/2; 
   focusZ = height/2 - 100; 
-  
+
   upX = 0; 
   upY = 1; 
   upZ = 0; 
-  
+
   leftRightHeadAngle = radians(270);
-  
+
   try { 
-    rbt = new Robot(); 
+    rbt = new Robot();
   } 
   catch(Exception e) { 
-    e.printStackTrace(); 
+    e.printStackTrace();
   }
   skipFrame = false; 
-  
+
   //initialize map 
   map = loadImage("map.png");
-  gridSize = 100; 
+  gridSize = 100;
 }
 
 void draw() { 
   background(0); 
-  
+
   camera(eyeX, eyeY, eyeZ, focusX, focusY, focusZ, upX, upY, upZ); 
-  //drawFloor(-2000, 2000, height, 100);
-  //drawFloor(-2000, 2000, height-gridSize*3, 100); 
+  drawFloor();
   drawFocalpoint();
   drawMap(); 
   controlCamera();
@@ -71,14 +70,14 @@ void drawMap() {
     for (int y = 0; y < map.height; y++) { 
       color c  = map.get(x, y); 
       if (c == blue) { 
-         texturedCube(x*gridSize-2000, height-gridSize, y*gridSize-2000, mossystone, gridSize);
-         texturedCube(x*gridSize-2000, height-gridSize*2, y*gridSize-2000, mossystone, gridSize); 
-         texturedCube(x*gridSize-2000, height-gridSize*3, y*gridSize-2000, mossystone, gridSize); 
+        texturedCube(x*gridSize-2000, height-gridSize, y*gridSize-2000, mossystone, gridSize);
+        texturedCube(x*gridSize-2000, height-gridSize*2, y*gridSize-2000, mossystone, gridSize); 
+        texturedCube(x*gridSize-2000, height-gridSize*3, y*gridSize-2000, mossystone, gridSize);
       } 
       if (c == black) {
-         texturedCube(x*gridSize-2000, height-gridSize, y*gridSize-2000, wood, gridSize);
-         texturedCube(x*gridSize-2000, height-gridSize*2, y*gridSize-2000, wood, gridSize); 
-         texturedCube(x*gridSize-2000, height-gridSize*3, y*gridSize-2000, wood, gridSize);
+        texturedCube(x*gridSize-2000, height-gridSize, y*gridSize-2000, wood, gridSize);
+        texturedCube(x*gridSize-2000, height-gridSize*2, y*gridSize-2000, wood, gridSize); 
+        texturedCube(x*gridSize-2000, height-gridSize*3, y*gridSize-2000, wood, gridSize);
       }
     }
   }
@@ -94,8 +93,14 @@ void drawFocalpoint() {
 void drawFloor() { 
   stroke(255); 
   for (int x = -2000; x <= 2000; x = x + 100) { 
-    line(x, height, -2000, x, height, 2000); 
-    line(-2000, height, x, 2000, height, x);
+    for (int z = -2000; z <=2000; z = z + 100) {
+      //line(x, height, -2000, x, height, 2000); 
+      //line(-2000, height, x, 2000, height, x);
+      //line(x, height-gridSize*3, -2000, x, height-gridSize*3, 2000); 
+      //line(-2000, height-gridSize*3, x, 2000, height-gridSize*3, x);
+      texturedCube(x, height, z, wood, gridSize);
+      texturedCube(x, height-gridSize*4, z, wood, gridSize);
+    }
   }
 }
 
@@ -121,23 +126,22 @@ void controlCamera() {
     leftRightHeadAngle = leftRightHeadAngle + (mouseX - pmouseX)*0.01; 
     upDownHeadAngle = upDownHeadAngle + (mouseY - pmouseY)*0.01;
   } 
-  
+
   if (upDownHeadAngle > PI/2.5) upDownHeadAngle = PI/2.5; 
   if (upDownHeadAngle < -PI/2.5) upDownHeadAngle = -PI/2.5;
 
   focusX = eyeX + cos(leftRightHeadAngle)*300; 
   focusZ = eyeZ + sin(leftRightHeadAngle)*300; 
   focusY = eyeY + tan(upDownHeadAngle)*300;
-  
+
   if (mouseX > width-2) { 
     rbt.mouseMove(width-3, mouseY); 
-    skipFrame = true; 
-  }
-  else if (mouseX < 2) { 
+    skipFrame = true;
+  } else if (mouseX < 2) { 
     rbt.mouseMove(3, mouseY); 
-    skipFrame = false; 
+    skipFrame = false;
   } else { 
-    skipFrame = false; 
+    skipFrame = false;
   }
 }
 
